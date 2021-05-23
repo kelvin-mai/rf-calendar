@@ -1,0 +1,22 @@
+{
+  "name": "rf-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "shadow-cljs watch app browser-test",
+    "build": "shadow-cljs release app",
+    "clean": "rm -rf public/js public/css test-output",
+    "start": "npm run clean && npm run watch",
+    "build-report": "shadow-cljs run shadow.cljs.build-report app report.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "highlight.js": "10.7.1",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "shadow-cljs": "^2.13.0"
+  }
+}
