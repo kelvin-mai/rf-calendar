@@ -14,3 +14,8 @@
  :ui/sidebar-open?
  (fn [db] 
    (get-in db [:ui :sidebar-open?])))
+
+(rf/reg-sub
+ :calendar/events
+ (fn [db]
+   (get-in db [:calendar :events])))
