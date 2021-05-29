@@ -42,8 +42,7 @@
   [children]
   (let [open? @(rf/subscribe [:ui/sidebar-open?])]
     [:> Drawer {:anchor "left"
-                :open open?}
-     [:> IconButton {:on-click #(rf/dispatch [:ui/toggle-sidebar])}
-      [:> MenuIcon]]
-     [:> Divider]
+                :open open?
+                :on-close #(rf/dispatch [:ui/toggle-sidebar])
+                }
      children]))

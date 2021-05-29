@@ -7,6 +7,7 @@
   (let [text @(rf/subscribe [:text])]
     [ui/container
      [:<>
-      [ui/sidebar [:div]]
+      [ui/sidebar 
+       [calendar/event-form]]
       [:h2 text]
       [calendar/calendar]]]))
