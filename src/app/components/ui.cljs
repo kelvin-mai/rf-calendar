@@ -15,7 +15,8 @@
 
 (defn create-theme [theme]
   (createMuiTheme
-   (clj->js {:palette {:type theme}})))
+   (clj->js {:palette {:type theme
+                       :primary {:main "#3174ad"}}})))
 
 (defn container
   [children]
@@ -24,7 +25,7 @@
      [:> CssBaseline]
      [:> AppBar {:position "static"}
       [:> Toolbar
-       [:> IconButton {:on-click #(rf/dispatch [:ui/toggle-sidebar])}
+       [:> IconButton {:on-click #(rf/dispatch [:event-form/init-create])}
         [:> MenuIcon]]
        [:> Typography {:component "h1"
                        :variant "h6"
@@ -43,6 +44,5 @@
   (let [open? @(rf/subscribe [:ui/sidebar-open?])]
     [:> Drawer {:anchor "left"
                 :open open?
-                :on-close #(rf/dispatch [:ui/toggle-sidebar])
-                }
+                :on-close #(rf/dispatch [:ui/toggle-sidebar])}
      children]))

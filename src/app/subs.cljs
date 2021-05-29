@@ -7,15 +7,20 @@
 
 (rf/reg-sub
  :ui/theme
- (fn [db] 
+ (fn [db]
    (get-in db [:ui :theme])))
 
 (rf/reg-sub
  :ui/sidebar-open?
- (fn [db] 
+ (fn [db]
    (get-in db [:ui :sidebar-open?])))
 
 (rf/reg-sub
  :calendar/events
  (fn [db]
    (get-in db [:calendar :events])))
+
+(rf/reg-sub
+ :event/form
+ (fn [db]
+   (get-in db [:event :form])))
