@@ -4,14 +4,13 @@
             ["@material-ui/core" :refer [CssBaseline
                                          ThemeProvider
                                          AppBar
-                                         Divider
                                          Drawer
                                          IconButton
                                          Switch
                                          Typography
                                          Toolbar
                                          Tooltip]]
-            ["@material-ui/icons/Menu" :default MenuIcon]))
+            ["@material-ui/icons/AddBox" :default AddIcon]))
 
 (defn create-theme [theme]
   (createMuiTheme
@@ -20,19 +19,20 @@
 
 (defn container
   [children]
-  (let [theme @(rf/subscribe [:ui/theme])]
+  (let [theme @(rf/subscribe [:ui/theme])
+        text @(rf/subscribe [:text])]
     [:> ThemeProvider {:theme (create-theme theme)}
      [:> CssBaseline]
      [:> AppBar {:position "static"}
       [:> Toolbar
        [:> IconButton {:on-click #(rf/dispatch [:event-form/init-create])}
-        [:> MenuIcon]]
+        [:> AddIcon]]
        [:> Typography {:component "h1"
                        :variant "h6"
                        :style {:flex-grow 1
                                :padding-left "1rem"}
                        :no-wrap true}
-        "Re-Frame App"]
+        text]
        [:> Tooltip {:title "Toggle dark theme"}
         [:> Switch {:checked (= theme "dark")
                     :on-change #(rf/dispatch [:ui/toggle-theme])}]]]]

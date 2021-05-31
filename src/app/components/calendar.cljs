@@ -15,5 +15,5 @@
                    :views ["month" "week" "day"]
                    :style {:height "80vh"}
                    :selectable true
-                   :on-select-event #(js/console.log :on-select-event %)
+                   :on-select-event #(rf/dispatch [:event-form/init-edit (.-id %)])
                    :on-select-slot #(rf/dispatch [:event-form/init-create (.-start %)])}]]))

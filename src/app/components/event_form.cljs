@@ -34,17 +34,20 @@
                           :disabled disabled?
                           :on-change #(rf/dispatch [:event-form/update-field field %])}])
 
-(defn event-form [values]
+(defn event-form []
   (let [{:keys [title
                 description
                 date
                 start
                 end
-                allDay]} values]
+                allDay]} @(rf/subscribe [:event/form])
+        mode @(rf/subscribe [:event/mode])]
     [:form {:style {:width 460}
             :on-submit (fn [e]
                          (.preventDefault e)
-                         (rf/dispatch [:event-form/submit-create]))}
+                         (if (= mode :edit)
+                           (rf/dispatch [:event-form/submit-edit])
+                           (rf/dispatch [:event-form/submit-create])))}
      [:> MuiPickersUtilsProvider {:utils moment-utils}
       [:> DatePicker {:auto-ok true
                       :orientation "landscape"
@@ -66,7 +69,8 @@
        [event-form-time-field {:label "Start Time"
                                :field :start
                                :value start
-                               :full-width? true}]
+                               :full-width? true
+                               :disabled? allDay}]
        [:div {:style {:display "flex"
                       :justify-content "space-between"}}
         [event-form-time-field {:label "End Time"
@@ -90,7 +94,14 @@
                     :color "default"
                     :on-click #(rf/dispatch [:ui/toggle-sidebar])}
          "Cancel"]
-        [:> Button {:type "submit"
-                    :variant "contained"
-                    :color "primary"}
-         "Submit"]]]]]))
+        [:div
+         (when (= mode :edit)
+           [:> Button {:style {:margin-right "0.5rem"}
+                       :variant "contained"
+                       :color "secondary"
+                       :on-click #(rf/dispatch [:event-form/delete])}
+            "Delete"])
+         [:> Button {:type "submit"
+                     :variant "contained"
+                     :color "primary"}
+          "Submit"]]]]]]))

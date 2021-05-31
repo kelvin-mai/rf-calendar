@@ -24,3 +24,8 @@
  :event/form
  (fn [db]
    (get-in db [:event :form])))
+
+(rf/reg-sub
+ :event/mode
+ (fn [db]
+   (get-in db [:event :mode])))

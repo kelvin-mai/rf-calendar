@@ -34,14 +34,15 @@
  (fn [{:keys [db]} [_ date]]
    {:db (-> db
             (assoc-in [:event :form] (new-event date))
-            (assoc-in [:event :edit] :create))
+            (assoc-in [:event :mode] :create))
     :dispatch [:ui/toggle-sidebar]}))
 
 (rf/reg-event-fx
  :event-form/submit-create
- (fn [{:keys [db]} [_]]
+ (fn [{:keys [db]}]
    (let [{:keys [date start end] :as values} (get-in db [:event :form])
          values (assoc values
+                       :id (swap! db/id-cache inc)
                        :start (create-datetime date start)
                        :end (create-datetime date end))
          events (get-in db [:calendar :events])
@@ -51,7 +52,39 @@
       :dispatch [:ui/toggle-sidebar]})))
 
 (rf/reg-event-fx
-  :event-form/init-update
-  (fn [{:keys [db]} [_]]
-    {:db db
-     :dispatch [:ui/toggle-sidebar]}))
+ :event-form/init-edit
+ (fn [{:keys [db]} [_ id]]
+   (let [events (get-in db [:calendar :events])
+         selected (->> events
+                       (filter #(= id (:id %)))
+                       (first))]
+     {:db (-> db
+              (assoc-in [:event :form] selected)
+              (assoc-in [:event :mode] :edit))
+      :dispatch [:ui/toggle-sidebar]})))
+
+(rf/reg-event-fx
+ :event-form/submit-edit
+ (fn [{:keys [db]}]
+   (let [{:keys [date start end] :as values} (get-in db [:event :form])
+         selected-id (:id values)
+         values (assoc values
+                       :start (create-datetime date start)
+                       :end (create-datetime date end))
+         events (get-in db [:calendar :events])
+         events (map
+                 #(if (= selected-id (:id %))
+                    values
+                    %)
+                 events)]
+     {:db (assoc-in db [:calendar :events] events)
+      :dispatch [:ui/toggle-sidebar]})))
+
+(rf/reg-event-fx
+ :event-form/delete
+ (fn [{:keys [db]}]
+   (let [{:keys [id]} (get-in db [:event :form])
+         events (get-in db [:calendar :events])
+         events (filter #(not (= id (:id %))) events)]
+     {:db (assoc-in db [:calendar :events] events)
+     :dispatch [:ui/toggle-sidebar]})))
